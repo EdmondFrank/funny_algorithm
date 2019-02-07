@@ -8,7 +8,7 @@ using namespace std;
 int main(){
 	const int mouse_num = 10;//老鼠数量
 	int mouse[mouse_num] = {0};//老鼠喝水一周后的状态'0'为存活，'1'为死亡
-	int drug = 0;//假设有毒瓶子号为177
+	int drug = 0;//假设有毒瓶子号为177,喝水一周后老鼠的状态｛0 0 1 0 1 1 0 0 0 1｝
 	for (int i = 0; i < mouse_num; i++)
 	{
 		cin>>mouse[i];//输入老鼠喝水后的存活状态
