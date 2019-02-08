@@ -99,10 +99,10 @@ int main(int argc, char *argv[])
         tmp[m]='\0';
 
         Permutation(tmp,&tmp[0]);
-    for(int i=0;i<idx;i++)
-    {
-        printf("%d\n",a[i]);
-    }
+    // for(int i=0;i<idx;i++)
+    // {
+    //     printf("%d\n",a[i]);
+    // }
     binary_Search(a,0,idx,d,r,m,v);
     return 0;
 }
@@ -142,9 +142,10 @@ void binary_Search(int a[],int start,int end,double d,double r,int m,double v)
         }
         if(sum - r < v)
         {
-            printf("%lf\n",sum);
-            printf("%lf\n",r);
-            printf("%lf\n",sum-r);
+            count++;
+            //printf("%lf\n",sum);
+            //printf("%lf\n",r);
+            //printf("%lf\n",sum-r);
             FILE *fp=fopen("r.txt","w");
             deciToBin(a[k],fp);
             fclose(fp);
@@ -156,7 +157,7 @@ void binary_Search(int a[],int start,int end,double d,double r,int m,double v)
         }
         
     }
-    if(m==0)
-        printf("failed\n");
+    if(count==0)
+        printf("no exist\n");
     
 }
