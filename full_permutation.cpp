@@ -18,8 +18,8 @@
 #include <stdlib.h>
 #include <math.h>
 #define MAX 100000
-
 int a[MAX]={0};
+int b[MAX]={0};
 int idx = 0;
 
 void binary_Search(int a[],int start,int end,double d,double r,int m,double v);
@@ -27,7 +27,7 @@ void binary_Search2(unsigned long start,long end,double d,double r,int m,int n,d
 void deciToBin(long num,FILE * fp);
 int IsSwap(char* pBegin, char* pEnd);
 void Permutation(char* pStr, char* pBegin);
-
+double getSum(long k,int m,double d);
 int IsSwap(char* pBegin, char* pEnd)   
 {  
     char* p;  
@@ -114,13 +114,24 @@ int main(int argc, char *argv[])
         printf("end : %s,%ld\n",end,strlen(end));
         start[m]='\0';
         end[m]='\0';
-    //Permutation(start,&start[0]);
+    Permutation(start,&start[0]);
     //     for(int i=0;i<idx;i++)
     //     {
     //         printf("%d %d\n",i,a[i]);
     //     }
-    //binary_Search(a,0,idx,d,r,m,v);
-    binary_Search2(strtol(start, NULL, 2 ),strtol(end, NULL, 2 ),d,r,m,n,v);
+    //
+    if (d<2)
+    {
+        printf("d is less than 2\n");
+        binary_Search(a,0,idx,d,r,m,v);
+    }
+    else
+    {
+        printf("d is greater than 2\n");
+        binary_Search2(strtol(start, NULL, 2 ),strtol(end, NULL, 2 ),d,r,m,n,v);
+    }
+    
+   
     return 0;
 }
 
@@ -142,15 +153,14 @@ void binary_Search2(unsigned long start,long end,double d,double r,int m,int n,d
     {
         k=(i+j)/2;
         while(BitCount(k)!=n){k++;}
-        if(k>j)break;
-        int tmp = 1;
-        double sum = 0;
+        double sum =getSum(k,m,d);
         //printf("i:%d j:%d K:%d\n",i,j,k);
         for(int i=0;i<m;i++)
         {
-            sum +=(((tmp<<i)&k)>> i)*pow(d,i);
+            sum +=(((1<<i)&k)>> i)*pow(d,i);
         }
         //printf("%lf\n",sum-r);
+        
         if(sum + v < r)
         {
             i=k+1;
@@ -161,6 +171,7 @@ void binary_Search2(unsigned long start,long end,double d,double r,int m,int n,d
             j=k-1;
             continue;
         }
+        
 
         if(sum - r < v)
         {
@@ -187,25 +198,52 @@ void binary_Search2(unsigned long start,long end,double d,double r,int m,int n,d
         printf("no exist\n");
 
 }
+double getSum(long k,int m,double d)
+{
+    double sum = 0;
+        //printf("i:%d j:%d K:%d\n",i,j,k);
+    for(int i=0;i<m;i++)
+    {
+        sum +=(((1<<i)&k)>> i)*pow(d,i);
+    }
+    return sum;
+}
 void binary_Search(int a[],int start,int end,double d,double r,int m,double v)
 {
     int i,j,k,n,count;
     count=0;
     i=start;
     j=end;
-
+    double max = 0; 
+    for(int x=1;x<idx;x++)
+    {
+        //double cur = getSum(a[x],m,d);
+        int y,temp=0;
+        temp = a[x];
+		for(y = x - 1; y >= 0; y --)
+		{
+            
+			if(getSum(a[y],m,d) > getSum(temp,m,d))
+			{
+				a[y + 1] = a[y];	
+			}else
+			{
+				break;
+			}
+		}
+		a[y + 1] = temp;
+    }
+    // for(int x=0;x<idx;x++)
+    // {
+    //     printf("%lf\n",getSum(a[x],m,d));
+    // }
     n=0;
     while(i<=j)
     {
         n++;
         k=(i+j)/2;
-        int tmp = 1;
-        double sum = 0;
+        double sum = getSum(a[k],m,d);
         //printf("K:%d\n",k);
-        for(int i=0;i<m;i++)
-        {
-            sum +=(((tmp<<i)&a[k])>> i)*pow(d,i); 
-        }
         //printf("%lf\n",sum-r);
         if(sum + v < r)
         {
