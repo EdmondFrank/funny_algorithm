@@ -23,8 +23,8 @@ int a[MAX]={0};
 int idx = 0;
 
 void binary_Search(int a[],int start,int end,double d,double r,int m,double v);
-void binary_Search2(long start,long end,double d,double r,int m,int n,double v);
-void deciToBin(int num,FILE * fp);
+void binary_Search2(unsigned long start,long end,double d,double r,int m,int n,double v);
+void deciToBin(long num,FILE * fp);
 int IsSwap(char* pBegin, char* pEnd);
 void Permutation(char* pStr, char* pBegin);
 
@@ -110,10 +110,11 @@ int main(int argc, char *argv[])
             end[i]='1';
         for(int i = m-n;i<m;i++)
             end[i]='0';
-
+        printf("start : %s,%ld\n",start,strlen(start));
+        printf("end : %s,%ld\n",end,strlen(end));
         start[m]='\0';
         end[m]='\0';
-    //  Permutation(start,&start[0]);
+    //Permutation(start,&start[0]);
     //     for(int i=0;i<idx;i++)
     //     {
     //         printf("%d %d\n",i,a[i]);
@@ -123,13 +124,13 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void deciToBin(int num,FILE * fp)
+void deciToBin(long num,FILE * fp)
 {
     if (num == 0){return;}
     deciToBin(num/2,fp);
-    fprintf(fp, "%d", num%2);
+    fprintf(fp, "%ld", num%2);
 }
-void binary_Search2(long start,long end,double d,double r,int m,int n,double v)
+void binary_Search2(unsigned long start,long end,double d,double r,int m,int n,double v)
 {
     long i,j,count;
     long k;
@@ -164,7 +165,7 @@ void binary_Search2(long start,long end,double d,double r,int m,int n,double v)
         if(sum - r < v)
         {
             count++;
-            //printf("%lf\n",sum);
+            
             //printf("%lf\n",r);
             //printf("%lf\n",sum-r);
             FILE *fp=fopen("r.txt","w");
@@ -172,6 +173,10 @@ void binary_Search2(long start,long end,double d,double r,int m,int n,double v)
             fclose(fp);
             printf("you need string is :");
             deciToBin(k,stdout);
+            printf("\n");
+            //printf("%ld",strlen(k));
+            printf("num of 1 is: %ld\n",BitCount(k));
+            printf("it's sum is :%lf\n",sum);
 
             //printf("you need: %d\n",k);
             break;
@@ -225,7 +230,7 @@ void binary_Search(int a[],int start,int end,double d,double r,int m,double v)
             printf("you need string is :");
             deciToBin(a[k],stdout);
             
-           printf("you need: %d\n",a[k]);
+           //printf("you need: %d\n",a[k]);
             break;
         }
         
