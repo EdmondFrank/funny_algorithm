@@ -1,8 +1,8 @@
-// 一个TXT文件，存放着5个参数：d,m,n,r，v。例如：1.59,7,5,27.5，0.5,
+// 一个TXT文件，存放着5个参数：d,m,n,r，v。例如：1.59,7,5,27.5,0.5,
 // 其中
 // d允许小数，代表底数。
-// m为整数，代表输出序列的位数。
-// n为整数，代表输出序列中“1”的位数，
+// m为整数，代表输出序列的位数。m<=10000
+// n为整数，代表输出序列中“1”的位数，n<=1000
 // r代表输出结果目标值，
 // v代表输出结果计算目标值允许误差。
 // 本示例中根据上述参考，转换出一个01序列满足如下
@@ -17,12 +17,13 @@
 #include<string.h>
 #include <stdlib.h>
 #include <math.h>
-#define MAX 10000
+#define MAX 100000
 
 int a[MAX]={0};
 int idx = 0;
 
 void binary_Search(int a[],int start,int end,double d,double r,int m,double v);
+void binary_Search2(long start,long end,double d,double r,int m,int n,double v);
 void deciToBin(int num,FILE * fp);
 int IsSwap(char* pBegin, char* pEnd);
 void Permutation(char* pStr, char* pBegin);
@@ -43,7 +44,7 @@ void Permutation(char* pStr, char* pBegin)
     if (*pBegin == '\0')
     {
         a[idx++] = strtol( pStr, NULL, 2 );
-        //printf("%s\n",pStr); 
+       // printf("%s\n",pStr);
     }
     else  
     {  
@@ -64,6 +65,13 @@ void Permutation(char* pStr, char* pBegin)
         }  
     }  
 } 
+long BitCount(long n)
+{
+    long c =0 ; // 计数器
+    for (c =0; n; n >>=1) // 循环移位
+        c += n &1 ; // 如果当前位是1，则计数器加1
+    return c ;
+}
 
 int main(int argc, char *argv[])
 {
@@ -82,54 +90,66 @@ int main(int argc, char *argv[])
             fscanf(fpRead,"%lf,",&r);
             fscanf(fpRead,"%lf,",&v);
         fclose(fpRead);
-            printf("%lf ",d);
-            printf("%d ",m);
-            printf("%d ",n);
-            printf("%lf ",r);
-            printf("%lf \n",v);
+            printf("d is : %lf\n",d);
+            printf("m is : %d\n",m);
+            printf("n is : %d\n",n);
+            printf("r is : %lf\n",r);
+            printf("v is : %lf\n",v);
         //getchar();
-        char * tmp = (char*)malloc((m+1)*sizeof(char));
-        if(tmp==NULL) exit(1);
+        char * start = (char*)malloc((m+1)*sizeof(char));
+        char * end = (char*)malloc((m+1)*sizeof(char));
+        if(start==NULL) exit(1);
+        if(end==NULL) exit(1);
 
         for(int i = 0;i<m-n;i++)
-            tmp[i]='0';
+            start[i]='0';
         for(int i = m-n;i<m;i++)
-            tmp[i]='1';
+            start[i]='1';
 
-        tmp[m]='\0';
+        for(int i = 0;i<m-n;i++)
+            end[i]='1';
+        for(int i = m-n;i<m;i++)
+            end[i]='0';
 
-        Permutation(tmp,&tmp[0]);
-    // for(int i=0;i<idx;i++)
-    // {
-    //     printf("%d\n",a[i]);
-    // }
-    binary_Search(a,0,idx,d,r,m,v);
+        start[m]='\0';
+        end[m]='\0';
+    //  Permutation(start,&start[0]);
+    //     for(int i=0;i<idx;i++)
+    //     {
+    //         printf("%d %d\n",i,a[i]);
+    //     }
+    //binary_Search(a,0,idx,d,r,m,v);
+    binary_Search2(strtol(start, NULL, 2 ),strtol(end, NULL, 2 ),d,r,m,n,v);
     return 0;
 }
+
 void deciToBin(int num,FILE * fp)
 {
     if (num == 0){return;}
     deciToBin(num/2,fp);
     fprintf(fp, "%d", num%2);
 }
-void binary_Search(int a[],int start,int end,double d,double r,int m,double v)
+void binary_Search2(long start,long end,double d,double r,int m,int n,double v)
 {
-    int i,j,k,n,count;
+    long i,j,count;
+    long k;
     count=0;
     i=start;
     j=end;
-
-    n=0;
+    printf("start %ld end: %ld\n",start,end);
     while(i<j)
     {
-        n++;
         k=(i+j)/2;
+        while(BitCount(k)!=n){k++;}
+        if(k>j)break;
         int tmp = 1;
         double sum = 0;
+        //printf("i:%d j:%d K:%d\n",i,j,k);
         for(int i=0;i<m;i++)
         {
-            sum +=(((tmp<<i)&a[k])>> i)*pow(d,i); 
+            sum +=(((tmp<<i)&k)>> i)*pow(d,i);
         }
+        //printf("%lf\n",sum-r);
         if(sum + v < r)
         {
             i=k+1;
@@ -140,6 +160,59 @@ void binary_Search(int a[],int start,int end,double d,double r,int m,double v)
             j=k-1;
             continue;
         }
+
+        if(sum - r < v)
+        {
+            count++;
+            //printf("%lf\n",sum);
+            //printf("%lf\n",r);
+            //printf("%lf\n",sum-r);
+            FILE *fp=fopen("r.txt","w");
+            deciToBin(k,fp);
+            fclose(fp);
+            printf("you need string is :");
+            deciToBin(k,stdout);
+
+            //printf("you need: %d\n",k);
+            break;
+        }
+
+    }
+    if(count==0)
+        printf("no exist\n");
+
+}
+void binary_Search(int a[],int start,int end,double d,double r,int m,double v)
+{
+    int i,j,k,n,count;
+    count=0;
+    i=start;
+    j=end;
+
+    n=0;
+    while(i<=j)
+    {
+        n++;
+        k=(i+j)/2;
+        int tmp = 1;
+        double sum = 0;
+        //printf("K:%d\n",k);
+        for(int i=0;i<m;i++)
+        {
+            sum +=(((tmp<<i)&a[k])>> i)*pow(d,i); 
+        }
+        //printf("%lf\n",sum-r);
+        if(sum + v < r)
+        {
+            i=k+1;
+            continue;
+        }
+        if(sum - v > r)
+        {
+            j=k-1;
+            continue;
+        }
+        
         if(sum - r < v)
         {
             count++;
@@ -152,7 +225,7 @@ void binary_Search(int a[],int start,int end,double d,double r,int m,double v)
             printf("you need string is :");
             deciToBin(a[k],stdout);
             
-            //printf("you need: %d\n",a[k]);
+           printf("you need: %d\n",a[k]);
             break;
         }
         
