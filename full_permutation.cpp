@@ -17,7 +17,7 @@
 #include<string.h>
 #include <stdlib.h>
 #include <math.h>
-const long MAX=100000000;
+const long MAX=1000000;
 int *a;
 int idx = 0;
 
@@ -141,13 +141,13 @@ int main(int argc, char *argv[])
     a = (int*)malloc((max+1)*sizeof(int));
     if (d<2 && max<MAX)
     {
-        //printf("d is less than 2\n");
+        printf("d is less than 2\n");
         Permutation(start,&start[0]);
         binary_Search(a,0,idx,d,r,m,v);
     }
     else
     {
-        //printf("d is greater than 2\n");
+        printf("d is greater than 2\n");
         binary_Search2(strtol(start, NULL, 2 ),strtol(end, NULL, 2 ),d,r,m,n,v);
     }
     
@@ -168,18 +168,19 @@ void binary_Search2(unsigned long start,long end,double d,double r,int m,int n,d
     count=0;
     i=start;
     j=end;
+    //int x = 0;
     printf("start %ld end: %ld\n",start,end);
     while(i<j)
     {
         k=(i+j)/2;
-        while(BitCount(k)!=n){k++;}
+        while(BitCount(k)!=n){k--;}
         if(k>j)break;
         double sum =getSum(k,m,d);
-        //printf("i:%d j:%d K:%d\n",i,j,k);
-        for(int i=0;i<m;i++)
-        {
-            sum +=(((1<<i)&k)>> i)*pow(d,i);
-        }
+        printf("i:%ld j:%ld K:%ld sum:%lf\n",i,j,k,sum);
+        // for(int i=0;i<m;i++)
+        // {
+        //     sum +=(((1<<i)&k)>> i)*pow(d,i);
+        // }
         //printf("%lf\n",sum-r);
         
         if(sum + v < r)
@@ -194,7 +195,7 @@ void binary_Search2(unsigned long start,long end,double d,double r,int m,int n,d
         }
         
 
-        if(sum - r < v)
+        if(sum - r < v && BitCount(k)==n)
         {
             count++;
             
@@ -239,7 +240,7 @@ void quickSort( int a[], int idx,int m,double d)
     for ( i = 0, j = idx -1;; i++, j--) {
         while (getSum(a[i],m,d) < getSum(p,m,d))
             i++;
-        while (p < a[j])
+        while (getSum(p,m,d) < getSum(a[j],m,d))
             j--;
         if ( i >= j)
             break;
