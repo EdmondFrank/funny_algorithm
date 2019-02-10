@@ -17,8 +17,8 @@
 #include<string.h>
 #include <stdlib.h>
 #include <math.h>
-#define MAX 1000000
-int a[MAX]={0};
+const long MAX=100000000;
+int *a;
 int idx = 0;
 
 void binary_Search(int a[],int start,int end,double d,double r,int m,double v);
@@ -27,6 +27,7 @@ void deciToBin(long num,FILE * fp);
 int IsSwap(char* pBegin, char* pEnd);
 void Permutation(char* pStr, char* pBegin);
 double getSum(long k,int m,double d);
+void quickSort( int a[], int idx,int m,double d);
 long Factorial(int n, int m);
 long Factorial(int n, int m)
 {
@@ -135,12 +136,12 @@ int main(int argc, char *argv[])
     //         printf("%d %d\n",i,a[i]);
     //     }
     //
-    //printf("Factorial:%d\n",Factorial(n,m));
-    
-    if (d<2 /*&& Factorial(n,m)<MAX*/)
+    long max = Factorial(n,m);
+    printf("Factorial:%ld\n",max);
+    a = (int*)malloc((max+1)*sizeof(int));
+    if (d<2 && max<MAX)
     {
         //printf("d is less than 2\n");
-       
         Permutation(start,&start[0]);
         binary_Search(a,0,idx,d,r,m,v);
     }
@@ -228,6 +229,27 @@ double getSum(long k,int m,double d)
     }
     return sum;
 }
+void quickSort( int a[], int idx,int m,double d)
+{
+    int i, j, p, tmp;
+    if (idx < 2)  return;
+
+    p = a[idx / 2];   // Get the middle element as pivot ..
+
+    for ( i = 0, j = idx -1;; i++, j--) {
+        while (getSum(a[i],m,d) < getSum(p,m,d))
+            i++;
+        while (p < a[j])
+            j--;
+        if ( i >= j)
+            break;
+        tmp = a[i]; a[i] = a[j]; a[j] = tmp;    //swap both ..
+    }   
+
+    quickSort( a, i,m,d); 
+    quickSort( a + i, idx - i,m,d); 
+}
+
 void binary_Search(int a[],int start,int end,double d,double r,int m,double v)
 {
     int i,j,k,count;
@@ -236,25 +258,26 @@ void binary_Search(int a[],int start,int end,double d,double r,int m,double v)
     j=end;
 
     printf("begin to sort n:%d\n",end);
-    for(int x=1;x<idx;x++)
-    {
-        //double cur = getSum(a[x],m,d);
-        int y,temp=0;
-        temp = a[x];
-		for(y = x - 1; y >= 0; y --)
-		{
-            /**/
-			//if(b[y] > b[x]/*getSum(temp,m,d)*/)
-			if(getSum(a[y],m,d) >getSum(temp,m,d))
-            {
-				a[y + 1] = a[y];	
-			}else
-			{
-				break;
-			}
-		}
-		a[y + 1] = temp;
-    }
+    quickSort(a,idx,m,d);
+    // for(int x=1;x<idx;x++)
+    // {
+    //     //double cur = getSum(a[x],m,d);
+    //     int y,temp=0;
+    //     temp = a[x];
+	// 	for(y = x - 1; y >= 0; y --)
+	// 	{
+    //         /**/
+	// 		//if(b[y] > b[x]/*getSum(temp,m,d)*/)
+	// 		if(getSum(a[y],m,d) > getSum(temp,m,d))
+    //         {
+	// 			a[y + 1] = a[y];	
+	// 		}else
+	// 		{
+	// 			break;
+	// 		}
+	// 	}
+	// 	a[y + 1] = temp;
+    // }
     // for(int x=0;x<idx;x++)
     // {
     //     printf("%lf\n",getSum(a[x],m,d));
