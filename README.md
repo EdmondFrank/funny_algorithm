@@ -5,3 +5,7 @@
 4. 链表逆序-plus　*reverseList_plus.cpp*
 5. 链表求公共节点　*getIntersectionNode.cpp*
 6. 链表查环　*detectCycle.cpp*
+7. 链表分割 *partition.cpp*
+8. 随机链表的拷贝　*copyRandomList.cpp*
+9. 两个有序链表的合并　*mergeTwoLists.cpp*
+10. k个有序链表的合并　*mergeKLists.cpp*
