@@ -1,6 +1,8 @@
 #include<iostream>
 #include <stdio.h>
 #include <set>
+#include <map>
+#include <vector>
 #include <algorithm>
 using namespace std;
 struct ListNode
