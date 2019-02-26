@@ -53,6 +53,19 @@ void shellsort(int a[],int n){
     }
 
 }
+void select_sort(int t[],int n){
+    int i,j,k,temp;
+    for(i=0;i<n;i++){
+        k = i;
+        for(j=i;j<n;j++)
+        if(t[j]>t[k]){
+            k = j;
+        }
+        temp=t[i];
+        t[i]=t[k];
+        t[k]=temp;
+    }
+}
 
 int main(){
     int a [] ={6,1,2,7,9,3,4,5,10,8};
@@ -63,6 +76,10 @@ int main(){
         printf("%d\n",a[i]);
     }
     shellsort(a,length);
+    for(int i=0;i<length;i++){
+        printf("%d\n",a[i]);
+    }
+    select_sort(a,length);
     for(int i=0;i<length;i++){
         printf("%d\n",a[i]);
     }
